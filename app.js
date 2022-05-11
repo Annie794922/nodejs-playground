@@ -13,6 +13,10 @@ const hello = require('./hello');
 ////////////////////////////////////////////////////////////////
 
 
-hello.sayHello(); //在hello這支檔案執行say這個方法
+const cowsay = require('cowsay');
 
-console.log(hello.title);
+console.log(cowsay.say({
+    text : "I'm a moooodule",
+    e : "oO",
+    T : "U "
+}));
