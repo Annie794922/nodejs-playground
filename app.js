@@ -54,6 +54,10 @@ app.post('/login', (req, res) => {
     //後台顯示輸入的資料內容(login輸入欄位設定的name值會被帶到頁面上顯示)
 });
 
+app.get('*', (req, res) => {
+    res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
+}); //*萬用路由的位置要放在所有路由的最後面，否則會讓所有的路由皆顯示404
+
 app.listen(3000, () => {
 	console.log('Web Server is running on port 3000');
 });
