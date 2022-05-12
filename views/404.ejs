@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+<%- include('./includes/header') %>
+<!-- 引入之後的頁面都會用到這個檔案裡的內容 -->
+<link rel="stylesheet" href="/styles/main.css">
 </head>
+<!-- 把結尾的</head>保留，上半部的內容存放在另一個檔案引入讀取，就不會每支檔案都受裡面可能會有的link影響 -->
 <body>
     <div class="container-md">
         <div class="alert alert-danger" role="alert">
