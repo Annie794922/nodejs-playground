@@ -12,5 +12,14 @@
     <!-- 在 ejs 檔案中使用參數 <%= %> -->
     <img src="/images/logo.jpg" alt="">
     <!-- /images前面的斜線代表上面還有一層資料夾(public)--public/images/logo.jpg -->
+    <% if (products.length > 0) { %>
+    <!-- TODO: 使用迴圈跑出 products 資料 -->
+            <% products.forEach((product) => { %>
+                <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+                <h3><%= product.title %></h3>
+            <% }) %>
+        <% } else { %>
+            尚無商品
+        <% } %>    
 </body>
 </html>
