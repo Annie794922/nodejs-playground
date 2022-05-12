@@ -23,23 +23,14 @@ app.use((req, res, next) => {
     next();
 })
 
-// app.get('/', (req, res) => { //處理路由(原生寫法)，有人請求get的時候要做的事情(若沒有這段瀏覽器會不知道如何處理get)
-//     res.writeHead(200, { 'Content-Type': 'text/html' });
-//     res.write('<head><meta charset="utf-8" /></head>')
-//     res.write('<body>')
-//     res.write('<h1>這是首頁</h1>')
-//     res.write('</body>')
-// });
-
 app.get('/', (req, res) => {
-    // res.writeHead(200, { 'Content-Type': 'text/html' });
-    // res.write('<head><meta charset="utf-8" /></head>')
-    // res.write('<body>')
-    // res.write('<h1>這是首頁</h1>')
-
-    //express寫法(status(200)讀取成功，並直接將檔案送出給瀏覽器)
     res.status(200)
         .sendFile(path.join(__dirname, 'views', 'index.html')); //(專案資料夾, 被讀取檔案所在的資料夾, 被讀取的檔案)
+});
+
+app.get('/login', (req, res) => {
+    res.status(200)
+        .sendFile(path.join(__dirname, 'views', 'login.html')); //(專案資料夾, 被讀取檔案所在的資料夾, 被讀取的檔案)
 });
 
 app.listen(3000, () => {
