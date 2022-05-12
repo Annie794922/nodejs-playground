@@ -1,26 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/main.css">
-    <title><%= pageTitle %></title>
+<%- include('./includes/header') %> 
+<link rel="stylesheet" href="/styles/main.css">
 </head>
+    <!-- .container
+        .row
+            .col-6 -->
 <body>
-    <h1><%= pageTitle %></h1>
-    <!-- 在 ejs 檔案中使用參數 <%= %> -->
-    <img src="/images/logo.jpg" alt="">
-    <!-- /images前面的斜線代表上面還有一層資料夾(public)--public/images/logo.jpg -->
-    <% if (products.length > 0) { %>
-    <!-- TODO: 使用迴圈跑出 products 資料 -->
-            <% products.forEach((product, productIndex) => { %>
-                <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
-                <h3><%= product.title %></h3>
-                <p><%= productIndex %></p>
-            <% }) %>
-        <% } else { %>
-            尚無商品
-        <% } %>    
-</body>
-</html>
+    <%- include('./includes/navbar') %> 
+
+    <div class="container-md">
+        <h1><%= pageTitle %></h1>
+        <div class="row">
+            <% if (products.length > 0) { %>
+                <% products.forEach((product) => { %>
+                    <div class="col-12 col-md-6 col-lg-4 g-3">
+                        <div class="card h-100">
+                            <img src="<%= product.imageUrl %>" class="card-img-top" alt="<%= product.title %>">
+                            <div class="card-body">
+                              <h5 class="card-title"><%= product.title %></h5>
+                              <p class="card-text"><%= product.description %></p>
+                              <a href="#" class="btn btn-primary">詳細資訊</a>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <h1>尚無商品</h1>
+            <% } %>    
+        </div>
+        <img src="/images/logo.jpg" alt="">
+
+    </div>
+
+        <%- include('./includes/footer') %> 

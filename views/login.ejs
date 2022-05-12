@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+<%- include('./includes/header') %> 
 </head>
 <body>
+    <%- include('./includes/navbar') %> 
     <h1><%= pageTitle %></h1>
     <!-- Login Books -->
     <form action="/login" method="POST">
@@ -20,5 +15,4 @@
         </div>
         <button type="submit">Login</button>
     </form>
-</body>
-</html>
+    <%- include('./includes/footer') %> 
