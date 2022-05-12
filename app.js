@@ -15,6 +15,10 @@ const bodyParser = require('body-parser'); //POST 過來的 data 需要解析（
 const app = express();
 
 // middleware(介於客戶端和瀏覽器之間的處理，決定要以什麼方式進行溝通--ex. 處理授權)
+app.set('view engine', 'ejs');
+app.set('views', 'views');
+// 預設路徑就是 views，如果沒有變動，可以省略此設定(第一個views資料夾放在第二個views裡)
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false })); //不要強化版的url加密
 
@@ -29,17 +33,19 @@ app.use((req, res, next) => {
 
 app.get('/', (req, res) => {
     res.status(200)
-        .sendFile(path.join(__dirname, 'views', 'index.html')); //(專案資料夾, 被讀取檔案所在的資料夾, 被讀取的檔案)
+        .render('index');
+        // .sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
 app.get('/login', (req, res) => {
     res.status(200)
-        .sendFile(path.join(__dirname, 'views', 'login.html')); //(專案資料夾, 被讀取檔案所在的資料夾, 被讀取的檔案)
+        .render('login');
+        // .sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
-app.get('/login', (req, res) => {
-    res.status(200).sendFile(path.join(__dirname, 'views', 'login.html'));
-});
+// app.get('/login', (req, res) => {
+//     res.status(200).sendFile(path.join(__dirname, 'views', 'login.html'));
+// });
 
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
@@ -55,7 +61,9 @@ app.post('/login', (req, res) => {
 });
 
 app.get('*', (req, res) => {
-    res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
+    res.status(404)
+        .render('404');
+        // .sendFile(path.join(__dirname, 'views', '404.html'));
 }); //*萬用路由的位置要放在所有路由的最後面，否則會讓所有的路由皆顯示404
 
 app.listen(3000, () => {
