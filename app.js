@@ -31,21 +31,19 @@ app.use((req, res, next) => {
     next();
 })
 
-app.get('/', (req, res) => {
+app.get('/', (req, res) => { //進入到根目錄時就get資料
     res.status(200)
-        .render('index');
+        .render('index', {
+            pageTitle: 'Book Your Books online'}); //渲染index這個檔案並將渲染內容命名為pageTitle
         // .sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
 app.get('/login', (req, res) => {
     res.status(200)
-        .render('login');
+        .render('login', {
+            pageTitle: 'Book Your Books online'});
         // .sendFile(path.join(__dirname, 'views', 'login.html'));
 });
-
-// app.get('/login', (req, res) => {
-//     res.status(200).sendFile(path.join(__dirname, 'views', 'login.html'));
-// });
 
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
