@@ -4,7 +4,7 @@ const getIndex = (req, res) => { //進入到根目錄時就get資料
     Product.findAll()
     .then((products) => {
         res.status(200)
-            .render('index', { //渲染index這個檔案並將渲染內容命名為pageTitle
+            .render('index', { //利用Product.findAll()將資料庫中的所有資料抓出來，即可將下方的測試資料移除
                 path: '/', //知道現在是瀏覽哪個頁面
                 pageTitle: 'Book Your Books online',
                 products // = products: products

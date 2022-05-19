@@ -13,6 +13,7 @@ const authRoutes = require('./routes/auth'); //引入自建的權限路由模組
 const shopRoutes = require('./routes/shop'); 
 const errorRoutes = require('./routes/404');
 const Product = require('./models/product'); //將models/product裡面的Product實例內容帶過來
+const User = require('./models/user');
 
 ////////////////////////////////////////////////////////////
 
@@ -24,7 +25,7 @@ app.set('views', 'views');
 // 預設路徑就是 views，如果沒有變動，可以省略此設定(第一個views資料夾放在第二個views裡)
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.urlencoded({ extended: false })); //不要強化版的url加密
+app.use(bodyParser.urlencoded({ extended: false })); //不要強化版的url加密(解析POST的URL)
 
 app.use((req, res, next) => {
     console.log('Hello!');
@@ -41,9 +42,10 @@ app.use(errorRoutes);
 
 
 database
-    .sync()
-	// .sync({ force: true }) // 同步(傳送force: true的物件--重設還原資料庫[開發的時候測試資料會用到])
+    // .sync()
+	.sync({ force: true }) // 同步(傳送force: true的物件--重設還原資料庫[開發的時候測試資料會用到])
 	.then((result) => {
+        User.create({ displayName: 'Admin', email: 'admin@skoob.com', password: '11111111'}) //測試資料的寫入
         Product.bulkCreate(products); // bulkCreate 一次傳進多個陣列(傳入下方的product陣列裡的資料)
 		app.listen(3000, () => { //前面用force: true還原之後再加上三筆資料，因此資料表還是三筆
 			console.log('Web Server is running on port 3000');

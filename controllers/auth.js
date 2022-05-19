@@ -3,8 +3,8 @@
 //負責權限路由的控制功能
 
 const getLogin = (req, res) => {
-    res.status(200) //response
-        .render('login', { //(view, {model})
+    res.status(200) //將views/auth/login的表單裡輸入的資料渲染過來
+        .render('auth/login', { //(view, {model})
             path: '/login', 
             pageTitle: 'Book Your Books online'});
         // .sendFile(path.join(__dirname, 'views', 'login.html'));
