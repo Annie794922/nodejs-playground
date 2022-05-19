@@ -41,10 +41,11 @@ app.use(errorRoutes);
 
 
 database
-	.sync() // 同步
+    .sync()
+	// .sync({ force: true }) // 同步(傳送force: true的物件--重設還原資料庫[開發的時候測試資料會用到])
 	.then((result) => {
         Product.bulkCreate(products); // bulkCreate 一次傳進多個陣列(傳入下方的product陣列裡的資料)
-		app.listen(3000, () => {
+		app.listen(3000, () => { //前面用force: true還原之後再加上三筆資料，因此資料表還是三筆
 			console.log('Web Server is running on port 3000');
 		});
 	})
