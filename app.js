@@ -8,6 +8,7 @@ const express = require('express');
 const bodyParser = require('body-parser'); //POST 過來的 data 需要解析（parse）
 
 // 第三個區塊 自建模組
+const database = require('./utils/database');
 const authRoutes = require('./routes/auth'); //引入自建的權限路由模組
 const shopRoutes = require('./routes/shop'); 
 const errorRoutes = require('./routes/404');
@@ -37,9 +38,16 @@ app.use(authRoutes); //套用auth.js裡面的權限路由
 app.use(shopRoutes);
 app.use(errorRoutes);
 
-app.listen(3000, () => {
-	console.log('Web Server is running on port 3000');
-});
+database
+	.sync() // 同步
+	.then((result) => {
+		app.listen(3000, () => {
+			console.log('Web Server is running on port 3000');
+		});
+	})
+	.catch((err) => {
+		console.log('create web server error: ', err);
+	});
 
 // const products = []; // 宣告常數 products 同時賦予它 [] 空陣列
 
