@@ -9,7 +9,7 @@ router.get('/', (req, res) => { //進入到根目錄時就get資料
         .render('index', { //渲染index這個檔案並將渲染內容命名為pageTitle
             path: '/', //知道現在是瀏覽哪個頁面
             pageTitle: 'Book Your Books online',
-            products: products
+            products // = products: products
             //當js的名稱和值相同時可以縮寫成products即可，但完整要寫成products: []才不會報錯(因沒有[]的話程式會認為沒賦予它東西)
         });
         // .sendFile(path.join(__dirname, 'views', 'index.html'));
