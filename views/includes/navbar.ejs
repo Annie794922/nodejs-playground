@@ -1,4 +1,4 @@
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">Navbar</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,7 +18,7 @@
                 <% } %>
             </ul>
             <!-- 在登入狀態時才讓Logout按鈕顯示 -->
-            <% if(isLogin) { %> 
+            <% if (isLogin) { %> 
               <form class="d-flex" action="/logout" method="POST">
                 <button class="btn btn-outline-success" type="submit">Logout</button>
               </form>

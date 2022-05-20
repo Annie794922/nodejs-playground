@@ -6,7 +6,7 @@ const getIndex = (req, res) => { //進入到根目錄時就get資料
             res.status(200)
                 .render('index', { //利用Product.findAll()將資料庫中的所有資料抓出來，即可將下方的測試資料移除
                     path: '/', //知道現在是瀏覽哪個頁面
-                    pageTitle: 'Book Your Books online',
+                    // pageTitle: 'Book Your Books online', //app.js中介軟體已有寫，先註解掉
                     products // = products: products
                     //當js的名稱和值相同時可以縮寫成products即可，但有時候完整要寫成products: []才不會報錯(因沒有[]的話程式會認為沒賦予它東西)
                 });

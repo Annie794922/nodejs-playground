@@ -7,6 +7,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser'); //POST 過來的 data 需要解析（parse）
 const session = require('express-session');
+const connectFlash = require('connect-flash');
 
 // 第三個區塊 自建模組
 const database = require('./utils/database');
@@ -37,13 +38,14 @@ app.use(session({
 	}
 })); 
 
-
+app.use(connectFlash()); //使用上面引入的connectFlash模組
 app.use(bodyParser.urlencoded({ extended: false })); //不要強化版的url加密(解析POST的URL)
 // login.ejs檔案的button傳送過來的POST資料需要經過bodyParser解析
 // 中介軟體需要先被執行，後面被引用才能在其他地方被使用(函式由上而下執行，因此app.use(模組名稱)必須寫在中介軟體之後)
 
 app.use((req, res, next) => {
     // res.locals.path = req.url;
+    res.locals.pageTitle = 'Book Your Books online'; //寫在中介軟體的自定義函式pageTitle
     res.locals.isLogin = req.session.isLogin || false; //全域變數的isLogin = 存放在session的isLogin 或 false
     next(); //若沒加next，程式會不知道何時該結束，加了之後middleware才會以use.use.get的順序執行
 });
