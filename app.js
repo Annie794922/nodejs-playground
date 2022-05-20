@@ -19,6 +19,8 @@ const User = require('./models/user');
 ////////////////////////////////////////////////////////////
 
 const app = express();
+const port = 3000;
+const oneDay = 1000 * 60 * 60 * 24; //先定義port和oneDay之後作為參數帶入後面程式，方便閱讀及日後維護
 
 // middleware(介於客戶端和瀏覽器之間的處理，決定要以什麼方式進行溝通--ex. 處理授權)
 app.set('view engine', 'ejs');
@@ -31,14 +33,14 @@ app.use(session({
 	resave: false,   // 沒變更內容是否強制回存
 	saveUninitialized: false ,  // 新 session 未變更內容是否儲存
 	cookie: {
-		maxAge: 10000 // session 狀態儲存多久？單位為毫秒(10000毫秒 = 10秒)
+		maxAge: oneDay // session 狀態儲存多久？單位為毫秒(10000毫秒 = 10秒)
 	}
 })); 
 
 
 app.use(bodyParser.urlencoded({ extended: false })); //不要強化版的url加密(解析POST的URL)
-// button傳送過來的POST資料需要經過bodyParser解析
-// 中介軟體需要先被執行，後面被引用才能在其他地方被使用(函式由上而下執行，因此app.use)
+// login.ejs檔案的button傳送過來的POST資料需要經過bodyParser解析
+// 中介軟體需要先被執行，後面被引用才能在其他地方被使用(函式由上而下執行，因此app.use(模組名稱)必須寫在中介軟體之後)
 
 app.use((req, res, next) => {
     // res.locals.path = req.url;
@@ -57,8 +59,8 @@ database
 	.then((result) => {
         User.create({ displayName: 'Admin', email: 'admin@skoob.com', password: '11111111'}) //測試資料的寫入
         Product.bulkCreate(products); // bulkCreate 一次傳進多個陣列(傳入下方的product陣列裡的資料)
-		app.listen(3000, () => { //前面用force: true還原之後再加上三筆資料，因此資料表還是三筆
-			console.log('Web Server is running on port 3000');
+		app.listen(port, () => { //前面用force: true還原之後再加上三筆資料，因此資料表還是三筆
+			console.log('Web Server is running on port ${port}'); //${port}是jQuery的寫法
 		});
 	})
 	.catch((err) => {

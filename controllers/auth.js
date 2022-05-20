@@ -9,7 +9,6 @@ const getLogin = (req, res) => {
         .render('auth/login', { //(view, {model})
             path: '/login', //若app.js的檔案中寫了res.locals.path = req.url;，這一行就要註解掉(否則是重複定義)
             pageTitle: 'Login'});
-        // .sendFile(path.join(__dirname, 'views', 'login.html'));
 }
 
 const postLogin = (req, res) => {
@@ -17,8 +16,9 @@ const postLogin = (req, res) => {
     // const { email, password } = {email: '1@1', password: '11111111'} (結構賦值)
     // {email: '1@1', password: '11111111'}
 
+    // 去後端比對user是否真的存在
     User.findOne({ where: { email }}) //查詢使用者輸入的其中一個資料為email
-    .then((user) => { //將上一行查詢的資料(email)命名為user
+    .then((user) => { //將上一行查詢的資料(email)給一個參數名稱為user
         if (!user) { //當輸入的email不是資料庫裡的user資料時
             console.log('login: 找不到此 user 或密碼錯誤');
             return res.redirect('/login');
@@ -37,9 +37,16 @@ const postLogin = (req, res) => {
 
 }
 
-const postLogout = (req, res) => { 
-    res.redirect('/login');
-}
+// const postLogout = (req, res) => { 
+//     res.redirect('/login');
+// }
+
+const postLogout = (req, res) => {
+    req.session.destroy((err) => { //函式接受到err參數時就執行毀滅session的程式(登出時會從API接收到err的訊息)
+        console.log('session destroy() error: ', err);
+        res.redirect('/login');
+    });
+};
 
 module.exports = { //將上面路由打包成模組
     getLogin,

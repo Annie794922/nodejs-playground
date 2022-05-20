@@ -9,14 +9,16 @@
                 <li class="nav-item">
                     <a class="nav-link <%= path === '/' ? 'active' : '' %>" aria-current="page" href="/">Home</a>
                 </li>
+                <% if(!isLogin) { %> 
                 <li class="nav-item">
                     <!-- actionUrl      
                     method: GET -->
                     <a class="nav-link <%= path === '/login' ? 'active' : '' %>" aria-current="page" href="/login">Login</a>
                 </li>
+                <% } %>
             </ul>
             <!-- 在登入狀態時才讓Logout按鈕顯示 -->
-            <% if(isLogin ) { %> 
+            <% if(isLogin) { %> 
               <form class="d-flex" action="/logout" method="POST">
                 <button class="btn btn-outline-success" type="submit">Logout</button>
               </form>
