@@ -44,7 +44,7 @@ app.use(bodyParser.urlencoded({ extended: false })); //不要強化版的url加�
 // 中介軟體需要先被執行，後面被引用才能在其他地方被使用(函式由上而下執行，因此app.use(模組名稱)必須寫在中介軟體之後)
 
 app.use((req, res, next) => {
-    // res.locals.path = req.url;
+    res.locals.path = req.url; //儲存在server的path = 使用者request動作時提供的url
     res.locals.pageTitle = 'Book Your Books online'; //寫在中介軟體的自定義函式pageTitle
     res.locals.isLogin = req.session.isLogin || false; //全域變數的isLogin = 存放在session的isLogin 或 false
     next(); //若沒加next，程式會不知道何時該結束，加了之後middleware才會以use.use.get的順序執行

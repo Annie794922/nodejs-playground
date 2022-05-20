@@ -14,6 +14,13 @@ const getLogin = (req, res) => {
         });
 }
 
+const getSignup = (req, res) => {
+    res.status(200)
+        .render('auth/signup', { //因在app.js中寫了app.set('views', 'views'); [告知views在views資料夾裡面]，因此路徑不用再特地寫前面的views
+            pageTitle: 'Signup',
+        });
+}
+
 const postLogin = (req, res) => {
     const { email, password } = req.body; //接收到使用者輸入的資料為email和password
     // const { email, password } = {email: '1@1', password: '11111111'} (結構賦值)
@@ -55,6 +62,7 @@ const postLogout = (req, res) => {
 
 module.exports = { //將上面路由打包成模組
     getLogin,
+    getSignup,
     postLogin,
     postLogout,
 }; 

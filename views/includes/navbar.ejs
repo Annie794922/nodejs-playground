@@ -15,6 +15,10 @@
                     method: GET -->
                     <a class="nav-link <%= path === '/login' ? 'active' : '' %>" aria-current="page" href="/login">Login</a>
                 </li>
+                <li class="nav-item">
+                  <a class="nav-link <%= path === '/signup' ? 'active' : '' %>" aria-current="page" href="/signup">Signup</a>
+                </li>
+                <!-- 從app.js中的res.locals.path = req.url;抓取request的path -->
                 <% } %>
             </ul>
             <!-- 在登入狀態時才讓Logout按鈕顯示 -->
