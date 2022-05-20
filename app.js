@@ -8,6 +8,7 @@ const express = require('express');
 const bodyParser = require('body-parser'); //POST 過來的 data 需要解析（parse）
 const session = require('express-session');
 const connectFlash = require('connect-flash');
+const csrfProtection = require('csurf'); //針對 csrf 攻擊的保護機制
 
 // 第三個區塊 自建模組
 const database = require('./utils/database');
@@ -16,6 +17,7 @@ const shopRoutes = require('./routes/shop');
 const errorRoutes = require('./routes/404');
 const Product = require('./models/product'); //將models/product裡面的Product實例內容帶過來
 const User = require('./models/user');
+const bcryptjs = require('bcryptjs');
 
 ////////////////////////////////////////////////////////////
 
@@ -38,6 +40,7 @@ app.use(session({
 	}
 })); 
 
+app.use(csrfProtection());
 app.use(connectFlash()); //使用上面引入的connectFlash模組
 app.use(bodyParser.urlencoded({ extended: false })); //不要強化版的url加密(解析POST的URL)
 // login.ejs檔案的button傳送過來的POST資料需要經過bodyParser解析
@@ -47,6 +50,7 @@ app.use((req, res, next) => {
     res.locals.path = req.url; //儲存在server的path = 使用者request動作時提供的url
     res.locals.pageTitle = 'Book Your Books online'; //寫在中介軟體的自定義函式pageTitle
     res.locals.isLogin = req.session.isLogin || false; //全域變數的isLogin = 存放在session的isLogin 或 false
+    res.locals.csrfToken = req.csrfToken(); //為了讓所有發送 POST request 的表單，都能取得 csrfToken(全域變數)
     next(); //若沒加next，程式會不知道何時該結束，加了之後middleware才會以use.use.get的順序執行
 });
 
@@ -58,13 +62,28 @@ app.use(errorRoutes);
 database
     // .sync()
 	.sync({ force: true }) // 同步(傳送force: true的物件--重設還原資料庫[開發的時候測試資料會用到])
-	.then((result) => {
-        User.create({ displayName: 'Admin', email: 'admin@skoob.com', password: '11111111'}) //測試資料的寫入
-        Product.bulkCreate(products); // bulkCreate 一次傳進多個陣列(傳入下方的product陣列裡的資料)
+
+    // 調整測試資料(自動建立 Admin 使用者時，使用 bcryptjs 套件將密碼加密，使其能夠在進行 login 登入成功)
+    .then((result) => {
+    const password = '11111111';
+    return bcryptjs.hash(password, 12)
+        .catch((err) => {
+            console.log('create new user hashed Password Error:', err)
+        });
+    })
+    .then((hashedPassword) => {
+        User.create({ displayName: 'Admin', email: 'admin@skoob.com', password: hashedPassword })
+        Product.bulkCreate(products);
+
+    // 原本將測試資料寫進資料庫的寫法
+	// .then((result) => {
+        // User.create({ displayName: 'Admin', email: 'admin@skoob.com', password: '11111111'}) //測試資料的寫入
+        // Product.bulkCreate(products); // bulkCreate 一次傳進多個陣列(傳入下方的product陣列裡的資料)
 		app.listen(port, () => { //前面用force: true還原之後再加上三筆資料，因此資料表還是三筆
 			console.log('Web Server is running on port ${port}'); //${port}是jQuery的寫法
 		});
 	})
+    /////////////////////////////////////////
 	.catch((err) => {
 		console.log('create web server error: ', err);
 	});

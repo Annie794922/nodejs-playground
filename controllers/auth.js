@@ -2,6 +2,8 @@
 
 //負責權限路由的控制功能
 
+const bcryptjs = require('bcryptjs');
+
 const User = require('../models/user');
 
 const getLogin = (req, res) => {
@@ -36,15 +38,34 @@ const postLogin = (req, res) => {
             req.flash('errorMessage', '錯誤的 Email 或 Password。'); //請求的request裡面的flash有個參數[名稱為errorMessage]，裡面的資訊為"錯誤的 Email 或 Password。"
             return res.redirect('/login');
         }
-        if (user.password === password) { //核對user資料表的密碼和輸入的密碼是否一致
-            console.log('login: 成功');
-            req.session.isLogin = true; //req.session(express內建的寫法)讓資料成為全域變數，isLogin是自訂的參數名稱
-            return res.redirect('/') //若登入成功就導到根目錄
-        } 
-        // console.log('login: 找不到此 user 或密碼錯誤'); //上面資料都不符合時這裡的程式就會執行
-        req.flash('errorMessage', '錯誤的 Email 或 Password。');
-        res.redirect('/login');
+        bcryptjs //只能比對資料庫中已經加密過的資料
+        .compare(password, user.password) //比對輸入的密碼&資料庫裡的密碼資料是否一致
+        .then((isMatch) => { //isMatch = true / false
+            if (isMatch) { //當isMatch是true時
+                req.session.user = user; //將user參數的值(email)、isLogin參數記在session變成全域變數
+                req.session.isLogin = true;
+                return req.session.save((err) => { //req.session.save()--沒使用的話session不會儲存在Node.js中
+                    console.log('postLogin - save session error: ', err);
+                    res.redirect('/');
+                });
+            }
+            req.flash('errorMessage', '錯誤的 Email 或 Password。')
+            res.redirect('/login');
+        })
+        .catch((err) => {
+            return res.redirect('/login');
+        })
     })
+           //密碼尚未加密的函式檢核寫法
+    //     if (user.password === password) { //核對user資料表的密碼和輸入的密碼是否一致
+    //         console.log('login: 成功');
+    //         req.session.isLogin = true; //req.session(express內建的寫法)讓資料成為全域變數，isLogin是自訂的參數名稱
+    //         return res.redirect('/') //若登入成功就導到根目錄
+    //     } 
+    //     // console.log('login: 找不到此 user 或密碼錯誤'); //上面資料都不符合時這裡的程式就會執行
+    //     req.flash('errorMessage', '錯誤的 Email 或 Password。');
+    //     res.redirect('/login');
+    // })
     .catch((err) => { //找不到資料不等於出錯，出錯通常會是資料庫問題之類的
         console.log('login error:', err);
     });
@@ -59,7 +80,14 @@ const postSignup = (req, res) => {
                 req.flash('errorMessage', '此帳號已存在！請使用其他 Email。')
                 return res.redirect('/signup');
             } else {
-                return User.create({ displayName, email, password }); //將前面req.body的資料依{ displayName, email, password }的形式新增到資料庫
+                // return User.create({ displayName, email, password }); //將前面req.body的資料依{ displayName, email, password }的形式新增到資料庫
+                return bcryptjs.hash(password, 12) //撒鹽[隨機穿插字碼進去] (想要加密的數值, 加密次數--2的x次方)
+                .then((hashedPassword) => {
+                    return User.create({ displayName, email, password: hashedPassword });
+                })
+                .catch((err) => {
+                    console.log('create new user error: ', err);
+                })
             }
         })
         .then((result) => { //註冊成功就導到login頁面

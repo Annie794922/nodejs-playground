@@ -17,13 +17,13 @@
               </div>
             </div>
           <% } %>
-
+            <!-- 在input欄位的value裡輸入的值會成為預設值顯示在頁面上，方便測試資料時快速註冊測試用帳號 -->
           <div class="col-8">
             <form class="row g-3 was-validated justify-content-center" action="/signup" method="POST"> 
             <!-- 點選之後要採取的動作和資料傳送方式 -->
               <div>
                 <label for="displayName" class="form-label">Display Name</label>
-                <input type="text" class="form-control" id="displayName" placeholder="Display Name" name="displayName" maxlength="20" required>
+                <input type="text" class="form-control" id="displayName" placeholder="Display Name" name="displayName" maxlength="20" required value="Test">
                 <!-- label和input的屬性設定要有關聯性(for/type/id/name)，name裡面設定的值在送出表單後會成為res.body裡面的key，因此一定要設定 -->
                 <div class="invalid-feedback">
                     顯示名稱最長不得超過 20 字元。
@@ -32,7 +32,7 @@
 
               <div>
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" placeholder="example@com" name="email" required>
+                <input type="email" class="form-control" id="email" placeholder="example@com" name="email" required value="123@test.com">
                 <div class="invalid-feedback">
                   請輸入合法的電子郵件地址。
                 </div>
@@ -40,7 +40,7 @@
 
               <div>
                 <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="password" name="password" minlength="8"  maxlength="12" required>
+                <input type="password" class="form-control" id="password" placeholder="password" name="password" minlength="8"  maxlength="12" required value="11111111">
                 <div class="invalid-feedback">
                     請輸入 8 ~ 12 位數的密碼。
                 </div>

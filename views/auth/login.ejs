@@ -29,6 +29,8 @@
                     </div>
 
                     <div>
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <!-- csrfToken套件的name是依套件規範給的值(_的部分) *上次上課進度，尚有問題沒解決，待老師解答* -->
                       <button class="btn btn-primary" type="submit">Login</button>
                     </div>
                   </form>
