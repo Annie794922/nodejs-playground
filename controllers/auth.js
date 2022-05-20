@@ -15,9 +15,11 @@ const getLogin = (req, res) => {
 }
 
 const getSignup = (req, res) => {
+    const errorMessage = req.flash('errorMessage')[0];
     res.status(200)
         .render('auth/signup', { //因在app.js中寫了app.set('views', 'views'); [告知views在views資料夾裡面]，因此路徑不用再特地寫前面的views
             pageTitle: 'Signup',
+            errorMessage
         });
 }
 
@@ -49,6 +51,25 @@ const postLogin = (req, res) => {
 
 }
 
+const postSignup = (req, res) => {
+    const { displayName, email, password } = req.body;
+    User.findOne({ where: { email } })
+        .then((user) => { //透過findOne回傳的資料名為user
+            if (user) {
+                req.flash('errorMessage', '此帳號已存在！請使用其他 Email。')
+                return res.redirect('/signup');
+            } else {
+                return User.create({ displayName, email, password }); //將前面req.body的資料依{ displayName, email, password }的形式新增到資料庫
+            }
+        })
+        .then((result) => { //註冊成功就導到login頁面
+            res.redirect('/login');
+        })
+        .catch((err) => {
+            console.log('signup_error', err);
+        });
+}
+
 // const postLogout = (req, res) => { 
 //     res.redirect('/login');
 // }
@@ -65,4 +86,5 @@ module.exports = { //將上面路由打包成模組
     getSignup,
     postLogin,
     postLogout,
+    postSignup,
 }; 

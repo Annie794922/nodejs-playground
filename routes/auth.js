@@ -16,5 +16,7 @@ router.post('/login', authController.postLogin);
 
 router.post('/logout', authController.postLogout);
 
+router.post('/signup', authController.postSignup);
+
 //將上面路由打包成模組
 module.exports = router;
