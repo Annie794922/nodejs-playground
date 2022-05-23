@@ -45,7 +45,8 @@
                     請輸入 8 ~ 12 位數的密碼。
                 </div>
               </div>
-
+              <!-- 在發送POST request的時候就要執行csrfToken -->
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button class="btn btn-primary" type="submit">Signup</button>
               <!-- type的值要寫submit -->
               </form>

@@ -5,10 +5,10 @@ const path = require('path');
 
 // 第二個區塊 第三方模組(套件)
 const express = require('express');
-const bodyParser = require('body-parser'); //POST 過來的 data 需要解析（parse）
 const session = require('express-session');
 const connectFlash = require('connect-flash');
 const csrfProtection = require('csurf'); //針對 csrf 攻擊的保護機制
+const bodyParser = require('body-parser'); //POST 過來的 data 需要解析（parse）
 
 // 第三個區塊 自建模組
 const database = require('./utils/database');
@@ -18,6 +18,8 @@ const errorRoutes = require('./routes/404');
 const Product = require('./models/product'); //將models/product裡面的Product實例內容帶過來
 const User = require('./models/user');
 const bcryptjs = require('bcryptjs');
+const Cart = require('./models/cart');
+const CartItem = require('./models/cart-items');
 
 ////////////////////////////////////////////////////////////
 
@@ -30,6 +32,7 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 // 預設路徑就是 views，如果沒有變動，可以省略此設定(第一個views資料夾放在第二個views裡)
 
+app.use(bodyParser.urlencoded({ extended: false })); //不要強化版的url加密(解析POST的URL)
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({ 
 	secret: 'sessionToken',  // 加密用的字串(字串內的字可自行決定)
@@ -40,11 +43,9 @@ app.use(session({
 	}
 })); 
 
-app.use(csrfProtection());
+
 app.use(connectFlash()); //使用上面引入的connectFlash模組
-app.use(bodyParser.urlencoded({ extended: false })); //不要強化版的url加密(解析POST的URL)
-// login.ejs檔案的button傳送過來的POST資料需要經過bodyParser解析
-// 中介軟體需要先被執行，後面被引用才能在其他地方被使用(函式由上而下執行，因此app.use(模組名稱)必須寫在中介軟體之後)
+app.use(csrfProtection()); //csurf套件規定要先使用session的中介軟體才能執行
 
 app.use((req, res, next) => {
     res.locals.path = req.url; //儲存在server的path = 使用者request動作時提供的url
@@ -58,6 +59,15 @@ app.use(authRoutes); //套用auth.js裡面的權限路由
 app.use(shopRoutes);
 app.use(errorRoutes);
 
+//定義 User 與 Cart 的關係
+User.hasOne(Cart); //一個 User 擁有一個 Cart
+Cart.belongsTo(User); //一個 Cart 屬於一個 User
+
+//Cart 與 Product 的關聯
+//一個 Cart 屬於多個 Product，而一個 Product 也屬於多個 Cart(同個購物車可以放多項不同商品，同個商品會被選進不同購物車)
+//他們之間需要一張表單來記錄商品數量
+Cart.belongsToMany(Product, { through: CartItem }); //後面的through--透過某種方式執行
+Product.belongsToMany(Cart, { through: CartItem });
 
 database
     // .sync()

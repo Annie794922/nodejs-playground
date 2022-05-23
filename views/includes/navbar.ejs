@@ -24,6 +24,7 @@
             <!-- 在登入狀態時才讓Logout按鈕顯示 -->
             <% if (isLogin) { %> 
               <form class="d-flex" action="/logout" method="POST">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button class="btn btn-outline-success" type="submit">Logout</button>
               </form>
             <% } %>
