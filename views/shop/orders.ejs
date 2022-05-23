@@ -1,0 +1,24 @@
+<%- include('../includes/header.ejs') %>
+    </head>
+
+    <body>
+        <%- include('../includes/navbar.ejs') %>
+        <div class="container-md">
+            <% if (orders.length <= 0) { %>
+                <h1>尚無訂單</h1>
+            <% } else { %>
+                <ul>
+                    <% orders.forEach(order => { %>
+                        <li>
+                            <h1># <%= order.id %>(總額: <%= order.amount %>)</h1>
+                            <ul class="list-group">
+                                <% order.products.forEach(product => { %>
+                                    <li class="list-group-item"><%= product.title %> (<%= product.orderItem.quantity %>)</li>
+                                <% }); %>
+                            </ul>
+                        </li>
+                    <% }); %>
+                </ul>
+            <% } %>
+        </div>
+        <%- include('../includes/footer.ejs') %>

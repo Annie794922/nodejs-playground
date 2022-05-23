@@ -22,7 +22,10 @@
             </ul>
             <hr class="my-5">
             <div class="text-center">
-              訂購(總額: <%= amount %>)
+              <form action="/create-order" method="POST">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <button class="btn btn-primary" type="submit">訂購(總額: <%= amount %>)</button>
+              </form>
             </div>
           <% } else { %>
             <h1>購物車尚無商品</h1>

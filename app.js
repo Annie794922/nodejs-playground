@@ -20,17 +20,18 @@ const User = require('./models/user');
 const bcryptjs = require('bcryptjs');
 const Cart = require('./models/cart');
 const CartItem = require('./models/cart-items');
+const Order = require('./models/order');
+const OrderItem = require('./models/order-items');
 
 ////////////////////////////////////////////////////////////
 
 const app = express();
 const port = 3000;
-const oneDay = 1000 * 60 * 60 * 24; //先定義port和oneDay之後作為參數帶入後面程式，方便閱讀及日後維護
+const oneDay = 1000 * 60 * 60 * 24;
 
-// middleware(介於客戶端和瀏覽器之間的處理，決定要以什麼方式進行溝通--ex. 處理授權)
+// middleware
 app.set('view engine', 'ejs');
 app.set('views', 'views');
-// 預設路徑就是 views，如果沒有變動，可以省略此設定(第一個views資料夾放在第二個views裡)
 
 app.use(bodyParser.urlencoded({ extended: false })); //不要強化版的url加密(解析POST的URL)
 app.use(express.static(path.join(__dirname, 'public')));
@@ -44,8 +45,8 @@ app.use(session({
 })); 
 
 
-app.use(connectFlash()); //使用上面引入的connectFlash模組
-app.use(csrfProtection()); //csurf套件規定要先使用session的中介軟體才能執行
+app.use(connectFlash());
+app.use(csrfProtection());
 
 // NOTE: 自定義模組取得 User model (如果已登入的話) [從controllers/auth.js取得session.user]
 app.use((req, res, next) => {
@@ -63,14 +64,14 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-    res.locals.path = req.url; //儲存在server的path = 使用者request動作時提供的url
-    res.locals.pageTitle = 'Book Your Books online'; //寫在中介軟體的自定義函式pageTitle
-    res.locals.isLogin = req.session.isLogin || false; //全域變數的isLogin = 存放在session的isLogin 或 false
-    res.locals.csrfToken = req.csrfToken(); //為了讓所有發送 POST request 的表單，都能取得 csrfToken(全域變數)
+    res.locals.path = req.url;
+    res.locals.pageTitle = 'Book Your Books online';
+    res.locals.isLogin = req.session.isLogin || false;
+    res.locals.csrfToken = req.csrfToken();
     next(); //若沒加next，程式會不知道何時該結束，加了之後middleware才會以use.use.get的順序執行
 });
 
-app.use(authRoutes); //套用auth.js裡面的權限路由
+app.use(authRoutes);
 app.use(shopRoutes);
 app.use(errorRoutes);
 
@@ -84,9 +85,15 @@ Cart.belongsTo(User); //一個 Cart 屬於一個 User
 Cart.belongsToMany(Product, { through: CartItem }); //後面的through--透過CartItem去記錄前面兩者的關係
 Product.belongsToMany(Cart, { through: CartItem });
 
+//定義 User 與 Order 的關係
+Order.belongsTo(User); //一個 Order 屬於 一個 User
+User.hasMany(Order); //User 擁有多個 Order
+Order.belongsToMany(Product, { through: OrderItem }); //一個 Order 屬於多個 Product，他們之間需要一張表單 orderItems 來記錄商品數量
+
+
 database
     // .sync()
-	.sync({ force: true }) // 同步(傳送force: true的物件--重設還原資料庫[開發的時候測試資料會用到])
+	.sync({ force: true }) // 同步(傳送force: true的物件--重設還原資料庫)
 
     // 調整測試資料(自動建立 Admin 使用者時，使用 bcryptjs 套件將密碼加密，使其能夠在進行 login 登入成功)
     .then((result) => {
@@ -99,12 +106,7 @@ database
     .then((hashedPassword) => {
         User.create({ displayName: 'Admin', email: 'admin@skoob.com', password: hashedPassword })
         Product.bulkCreate(products);
-
-    // 原本將測試資料寫進資料庫的寫法
-	// .then((result) => {
-        // User.create({ displayName: 'Admin', email: 'admin@skoob.com', password: '11111111'}) //測試資料的寫入
-        // Product.bulkCreate(products); // bulkCreate 一次傳進多個陣列(傳入下方的product陣列裡的資料)
-		app.listen(port, () => { //前面用force: true還原之後再加上三筆資料，因此資料表還是三筆
+		app.listen(port, () => {
 			console.log('Web Server is running on port ${port}'); //${port}是jQuery的寫法
 		});
 	})
@@ -113,7 +115,7 @@ database
 		console.log('create web server error: ', err);
 	});
 
-// const products = []; // 宣告常數 products 同時賦予它 [] 空陣列
+
 
 const products = [
     {

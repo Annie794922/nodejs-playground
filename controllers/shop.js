@@ -128,6 +128,48 @@ const postCartDeleteItem = (req, res, next) => { //移除購物車內的商品
         .catch((err) => console.log(err));
 };
 
+const getOrders = (req, res, next) => {
+    req.user
+        .getOrders({ include: ['products']})
+        .then((orders) => {
+            console.log('orders', orders)
+            res.render('shop/orders', {
+                orders,
+            });
+        })
+        .catch((err) => console.log(err));
+};
+
+const postOrders = (req, res, next) => {
+    let userCart;
+    let orderAmount = 0;
+    req.user
+        .getCart()
+        .then((cart) => {
+            userCart = cart;
+            orderAmount = cart.amount;
+            return cart.getProducts();
+        })
+        .then((products) => {
+            return req.user
+                .createOrder({ amount: orderAmount })
+                .then((order) => {
+                    return order.addProducts(products.map((product) => {
+                        product.orderItem = { quantity: product.cartItem.quantity };
+                        return product;
+                    }));
+                })
+                .then((result) => {
+                    return userCart.setProducts(null);
+                })
+                .then((result) => {
+                    res.redirect('/orders');
+                })
+                .catch((err) => console.log(err));
+        })
+        .catch((err) => console.log(err));
+};
+
 // const products = [
 //     {
 //         title: '四月是你的謊言 1',
@@ -152,6 +194,8 @@ const postCartDeleteItem = (req, res, next) => { //移除購物車內的商品
 module.exports = { //將上面路由打包成模組
     getIndex,
     getCart,
+    getOrders,
+    postOrders,
     postCartAddItem,
     postCartDeleteItem,
 }; 
