@@ -25,13 +25,19 @@
                 <label for="displayName" class="form-label">Display Name</label>
                 <input type="text" class="form-control" id="displayName" placeholder="Display Name" name="displayName" maxlength="20" required value="Test">
                 <!-- label和input的屬性設定要有關聯性(for/type/id/name)，name裡面設定的值在送出表單後會成為res.body裡面的key，因此一定要設定 -->
+
+                <!-- req.body ={
+                  displayName: 'Admin',
+                  email: 'admin@skoob.com',
+                  password: '11111111'
+                } -->
                 <div class="invalid-feedback">
                     顯示名稱最長不得超過 20 字元。
                 </div>
               </div>
 
               <div>
-                <label for="email" class="form-label">Email</label>
+                <label for="card" class="form-label">Email</label>
                 <input type="email" class="form-control" id="email" placeholder="example@com" name="email" required value="123@test.com">
                 <div class="invalid-feedback">
                   請輸入合法的電子郵件地址。

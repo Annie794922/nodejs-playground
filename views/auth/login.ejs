@@ -20,17 +20,17 @@
                 <form class="row g-3 needs-validation" action="/login" method="POST">
                     <div>
                       <label for="email" class="form-label">Email</label>
-                      <input type="email" class="form-control" id="email" name="email">
+                      <input type="email" class="form-control" id="email" name="email" value="123@test.com">
                     </div>
 
                     <div>
                       <label for="password" class="form-label">Password</label>
-                      <input type="password" class="form-control" id="password" name="password">
+                      <input type="password" class="form-control" id="password" name="password" value="11111111">
                     </div>
 
                     <div>
                       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                      <!-- csrfToken套件的name是依套件規範給的值(_的部分) *上次上課進度，尚有問題沒解決，待老師解答* -->
+                      <!-- csrfToken套件的name是依套件規範給的值(_的部分)，要經過csrfToken加密保護的區塊都要放<%= csrfToken %> -->
                       <button class="btn btn-primary" type="submit">Login</button>
                     </div>
                   </form>

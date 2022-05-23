@@ -47,6 +47,21 @@ app.use(session({
 app.use(connectFlash()); //使用上面引入的connectFlash模組
 app.use(csrfProtection()); //csurf套件規定要先使用session的中介軟體才能執行
 
+// NOTE: 自定義模組取得 User model (如果已登入的話) [從controllers/auth.js取得session.user]
+app.use((req, res, next) => {
+    if (!req.session.user) {
+        return next();
+    }
+    User.findByPk(req.session.user.id) //Pk = Primary key
+        .then((user) => {
+            req.user = user;
+            next();
+        })
+        .catch((err) => {
+            console.log('find user by session id error: ', err);
+        })
+});
+
 app.use((req, res, next) => {
     res.locals.path = req.url; //儲存在server的path = 使用者request動作時提供的url
     res.locals.pageTitle = 'Book Your Books online'; //寫在中介軟體的自定義函式pageTitle
@@ -66,7 +81,7 @@ Cart.belongsTo(User); //一個 Cart 屬於一個 User
 //Cart 與 Product 的關聯
 //一個 Cart 屬於多個 Product，而一個 Product 也屬於多個 Cart(同個購物車可以放多項不同商品，同個商品會被選進不同購物車)
 //他們之間需要一張表單來記錄商品數量
-Cart.belongsToMany(Product, { through: CartItem }); //後面的through--透過某種方式執行
+Cart.belongsToMany(Product, { through: CartItem }); //後面的through--透過CartItem去記錄前面兩者的關係
 Product.belongsToMany(Cart, { through: CartItem });
 
 database
